@@ -40,8 +40,9 @@ def init():
         f.close()
     # random.shuffle(arknights_rate)
     logger.success("gacha_arknights加载完成")
+    print(no_rarity_5_times)
 
-async def get_arknights_gacha_res(user_id: str, up_id: str = "0") -> str:
+async def get_arknights_gacha_res(user_id: str, up_id: str = "arknights_up_0") -> str:
     global rarity_2, rarity_3, rarity_4, rarity_5, no_rarity_5_times
     local_rarity_2 = rarity_2
     local_rarity_3 = rarity_3
@@ -109,7 +110,7 @@ async def get_arknights_gacha_res(user_id: str, up_id: str = "0") -> str:
 
 
     # 保存抽卡数据
-    no_rarity_5_times[user_id] = {up_id: {"no_rarity_5_times": no_rarity_5_times_in_up, "total_times": total_times_in_up, "total_rarity_5_times": total_rarity_5_times_in_up}}
+    no_rarity_5_times[user_id][up_id] = {"no_rarity_5_times": no_rarity_5_times_in_up, "total_times": total_times_in_up, "total_rarity_5_times": total_rarity_5_times_in_up}
     with open(arknights_dir + f"no_rarity_5_times.json", "w", encoding="utf-8") as f:
         json.dump(no_rarity_5_times, f, ensure_ascii=False)
         f.close()

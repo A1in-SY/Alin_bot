@@ -31,16 +31,16 @@ async def get_game_name(e: Event, gu: str = ArgPlainText("game&up")):
     # await gacha.send(up_id)
 
     if game_name not in game_list:
-        await gacha.reject(f"游戏 {game_name} 暂不支持，请重新输入！")
+        await gacha.reject(f"游戏 {game_name} 暂不支持，请重新输入游戏名字")
 
-    if game_name == "明日方舟" and up_id == "arknights_up_卡池编号":
+    if game_name == "明日方舟" and up_id == "arknights_up_卡池":
         s = []
         for index, u in enumerate(up):
             s.append(f"{index} {up[u]['name']}")
         await gacha.finish("现在支持的明日方舟卡池及编号:\n"+"\n".join(s))
     
     if game_name == "明日方舟" and up_id in up:
-        gacha_res = await get_arknights_gacha_res(e.__getattribute__("user_id"), up_id)
+        gacha_res = await get_arknights_gacha_res(str(e.__getattribute__("user_id")), up_id)
         await gacha.finish(e.__getattribute__("sender").__getattribute__("nickname")+gacha_res)
     
     await gacha.finish("不支持的明日方舟参数")
