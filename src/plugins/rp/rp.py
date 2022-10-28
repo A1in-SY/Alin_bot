@@ -16,7 +16,16 @@ rp = on_command(cmd="rp", rule=to_me(), aliases={"人品", "今日人品"})
 rp_dict = {}
 rp_path = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + "data" + os.path.sep + "rp.pkl"
 if os.path.exists(rp_path):
-    rp_dict = pickle.load(open(rp_path, "rb"))
+    if os.path.exists(rp_path):
+    with open(rp_path, "r", encoding="utf-8") as f:
+        rp_dict = json.load(f)
+        f.close()
+    #若不存在则创建
+else:
+    with open(rp_path, "w", encoding="utf-8") as f:
+        json.dump(rp_dict, f)
+        f.close()
+
 
 
 @rp.handle()
@@ -63,6 +72,9 @@ def roll_rp():
     return rp
 
 def save(user_id: str, time: int, rp: int):
+    #rp_dict[user_id] = {"last_rp_timestamp": time, "rp": rp}
+    #pickle.dump(rp_dict, open(rp_path, "wb"))
     rp_dict[user_id] = {"last_rp_timestamp": time, "rp": rp}
-    pickle.dump(rp_dict, open(rp_path, "wb"))
+    with open(rp_path, "w", encoding="utf-8") as f:
+        json.dump(rp_dict, f)
     return
