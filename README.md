@@ -1,12 +1,11 @@
-# Alin
+# Alin_bot for QQ
 
-## How to start
+Todolist
 
-1. generate project using `nb create` .
-2. create your plugin using `nb plugin create` .
-3. writing your plugins under `src/plugins` folder.
-4. run your bot using `nb run` .
-
-## Documentation
-
-See [Docs](https://v2.nonebot.dev/)
+* [ ] setu模块优化筛图算法
+* [ ] setu模块完善
+* [ ] gacha模块的指令添加、删除卡池内容
+* [ ] notice模块开发
+* [ ] 支持更多手游的gacha模块
+* [ ] setu模块对接ai绘画（？
+* [ ] 骰娘模式开发
