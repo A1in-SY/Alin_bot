@@ -140,6 +140,7 @@ dmypy.json
 
 # data and images
 *.png
+*.jpg
 *.json
 *.pkl
 /src/plugins/gacha/images/*
