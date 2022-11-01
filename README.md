@@ -1,4 +1,4 @@
-# Alin_bot for QQ
+# Alin_bot for DNZZZ
 
 Todolist
 
