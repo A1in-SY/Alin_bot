@@ -63,7 +63,8 @@ async def get_arknights_gacha_res(user_id: str, up_id: str = "arknights_up_0") -
         up_rarity_4_rate += c["up_to"]
     for c in up[up_id]["rarity_5"]:
         up_rarity_5_rate += c["up_to"]
-        up_rarity_5_id.append(c["id"])
+        if c["is_up"]:
+            up_rarity_5_id.append(c["id"])
     rarity_3_sum = round((len(local_rarity_3)-up_rarity_3_num)/(1-up_rarity_3_rate))
     rarity_4_sum = round((len(local_rarity_4)-up_rarity_4_num)/(1-up_rarity_4_rate))
     rarity_5_sum = round((len(local_rarity_5)-up_rarity_5_num)/(1-up_rarity_5_rate))

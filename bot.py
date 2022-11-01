@@ -48,6 +48,12 @@ nonebot.load_from_toml("pyproject.toml")
     #     "message": str(f)
     # })
 
+# from nonebot.message import event_postprocessor
+# from nonebot.adapters import Event
+# @event_postprocessor
+# async def do_something(e: Event):
+#     print(e)
+#     pass
 
 
 if __name__ == "__main__":

@@ -1,10 +1,7 @@
 import nonebot
 from nonebot import Bot
-from nonebot import on_command, on_message, on_startswith
-from nonebot.rule import to_me
-from nonebot.matcher import Matcher
-from nonebot.adapters import Message, Event
-from nonebot.params import Arg, CommandArg, ArgPlainText, Received
+from nonebot.adapters import Event
+from nonebot.log import logger
 import time
 import html
 
@@ -47,3 +44,22 @@ def html_entity(content: str):
     content = content.replace("&", "&amp;")
     content = html.escape(content)
     return content
+
+user_cd = {}
+async def check_user_cd(e: Event) -> bool:
+    user_id = e.get_user_id()
+    if user_id not in user_cd:
+        return True
+    else:
+        now_timestamp = time.time()
+        last_commad_timestamp = user_cd[user_id]
+        if int(now_timestamp-last_commad_timestamp) > 1:
+            return True
+        else:
+            logger.warning(f"{user_id}还在cd中")
+            return False
+
+async def set_user_cd(user_id: str) -> None:
+    now_timestamp = time.time()
+    user_cd[user_id] = now_timestamp
+    return

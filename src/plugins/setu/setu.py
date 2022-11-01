@@ -6,13 +6,13 @@ from nonebot.adapters import Message, Event
 from nonebot.params import Arg, CommandArg, ArgPlainText
 import os
 
-from ...util import send_group_msg, send_private_msg, send_group_img, send_private_img, get_image_cq
+from ...util import send_group_msg, send_private_msg, send_group_img, send_private_img, get_image_cq, check_user_cd, set_user_cd
 from .pixiv import get_setu, download_setu_from_pixiv, download_setu_from_pixivre, download_tag_json, get_tag_setu, check
 
 pixiv_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = pixiv_dir + os.path.sep + "data"
 images_dir = pixiv_dir + os.path.sep + "images"
-setu = on_command(cmd="setu", rule=to_me(), aliases={"来张涩图", "涩图", "色图", "来张色图"})
+setu = on_command(cmd="setu", rule=to_me() & check_user_cd, aliases={"来张涩图", "涩图", "色图", "来张色图"})
 
 
 @setu.handle()
@@ -38,30 +38,37 @@ async def got_func(e: Event, bot: Bot, ca: str = ArgPlainText("cmd&arg")):
         illust_url_list, illust_info = await get_setu()
         await send_images_from_list(illust_url_list, "pixiv", bot, user_id, e)
         info = f"PID{illust_info['illust_id']}， 画师{illust_info['illust_userName']}， 标题{illust_info['illust_title']}"
+        await set_user_cd(user_id)
         return await setu.finish(f"{user_name}要的涩图，"+info)
     
     cmd = ca.split(" ")[0]
     if not " " in ca:
+        await set_user_cd(user_id)
         return await setu.finish("参数错误")
     else:  
         arg = " ".join(ca.split(" ")[1:])
 
     if cmd in ["add", "添加"]:
         if os.path.exists(data_dir+os.path.sep+f"{arg}.json"):
+            await set_user_cd(user_id)
             return await setu.finish(f"Tag {arg} 已存在")
         await setu.send(f"开始下载 {arg}.json")
         flag = await download_tag_json(arg)
         if flag:
+            await set_user_cd(user_id)
             return await setu.finish(f"Tag {arg} 添加成功")
         else:
+            await set_user_cd(user_id)
             return await setu.finish(f"Tag {arg} 添加失败")
 
     elif cmd in ["tag", "标签"]:
         illust_url_list, illust_info = await get_tag_setu(arg)
         if illust_url_list == []:
+            await set_user_cd(user_id)
             return await setu.finish(f"没有{user_name}要的{arg}涩图，私密马赛desu")
         await send_images_from_list(illust_url_list, "pixiv", bot, user_id, e)
         info = f"PID{illust_info['illust_id']}，画师{illust_info['illust_userName']}，标题{illust_info['illust_title']}"
+        await set_user_cd(user_id)
         return await setu.finish(f"{user_name}要的{arg}涩图，"+info)
 
     elif cmd in ["pid", "PID"]:
@@ -77,8 +84,10 @@ async def got_func(e: Event, bot: Bot, ca: str = ArgPlainText("cmd&arg")):
             illust_url_list = ["https://pixiv.re/"+arg+f"-{x}.png" for x in range(illust_pageCount)]
         await send_images_from_list(illust_url_list, "pixivre", bot, user_id, e)
         info = f"PID{illust_info_json['body']['illustId']}，画师{illust_info_json['body']['userName']}，标题{illust_info_json['body']['title']}"
+        await set_user_cd(user_id)
         return await setu.finish(f"{user_name}要的{arg}涩图，"+info)
     else:
+        await set_user_cd(user_id)
         await setu.finish("目前暂未支持")
     
     

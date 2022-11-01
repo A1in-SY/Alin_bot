@@ -6,7 +6,7 @@ from nonebot.adapters import Message, Event
 from nonebot.params import Arg, CommandArg, ArgPlainText, Received
 import random
 import time
-import pickle
+import json
 import os
 
 from ...util import send_group_msg, send_private_msg
@@ -14,12 +14,12 @@ from ...util import send_group_msg, send_private_msg
 rp = on_command(cmd="rp", rule=to_me(), aliases={"人品", "今日人品"})
 
 rp_dict = {}
-rp_path = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + "data" + os.path.sep + "rp.pkl"
+rp_path = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + "data" + os.path.sep + "rp.json"
 if os.path.exists(rp_path):
     if os.path.exists(rp_path):
-    with open(rp_path, "r", encoding="utf-8") as f:
-        rp_dict = json.load(f)
-        f.close()
+        with open(rp_path, "r", encoding="utf-8") as f:
+            rp_dict = json.load(f)
+            f.close()
     #若不存在则创建
 else:
     with open(rp_path, "w", encoding="utf-8") as f:

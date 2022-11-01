@@ -58,7 +58,7 @@ async def download_setu_from_pixiv(illust_url: str) -> bool:
             )
             if res.status_code != 503:
                 f.write(res.content)
-                f.write(bytes("send by Alin(Bot)", encoding="utf-8"))
+                f.write(bytes("send by Alin(Bot)"+str(random.randint(0, 999)), encoding="utf-8"))
                 result = True
                 logger.success(f"下载 {illust_name} 成功")
             else:
@@ -90,7 +90,7 @@ async def download_setu_from_pixivre(illust_url: str) -> bool:
             )
             if res.status_code != 503:
                 f.write(res.content)
-                f.write(bytes("send by Alin(Bot)", encoding="utf-8"))
+                f.write(bytes("send by Alin(Bot)"+str(random.randint(0, 999)), encoding="utf-8"))
                 result = True
                 logger.success(f"下载 {illust_name} 成功")
             else:
@@ -156,7 +156,7 @@ async def get_tag_setu(tag: str) -> tuple[list[str], dict]:
                 "Cookie": cookie
             }
             res = requests.get(
-                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%2010000users%E5%85%A5%E3%82%8A?word="+tag+f"%2010000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p=1&s_mode=s_tag&type=all&lang=zh",
+                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%205000users%E5%85%A5%E3%82%8A?word="+tag+f"%205000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p=1&s_mode=s_tag&type=all&lang=zh",
                 headers=headers,
                 proxies={
                     "http": "http://127.0.0.1:7890",
@@ -168,7 +168,7 @@ async def get_tag_setu(tag: str) -> tuple[list[str], dict]:
             page_total = int(illust_total/60) + 1
             random_page = random.randint(1, page_total)
             resp = requests.get(
-                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%2010000users%E5%85%A5%E3%82%8A?word="+tag+f"%2010000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p="+str(random_page)+"&s_mode=s_tag&type=all&lang=zh",
+                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%205000users%E5%85%A5%E3%82%8A?word="+tag+f"%205000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p="+str(random_page)+"&s_mode=s_tag&type=all&lang=zh",
                 headers=headers,
                 proxies={
                     "http": "http://127.0.0.1:7890",
@@ -212,7 +212,7 @@ async def check(illust_id: str) -> tuple[bool, dict]:
     viewCount = int(res["body"]["viewCount"])
     illustType = int(res["body"]["illustType"])
     bookmarkCount = int(res["body"]["bookmarkCount"])
-    if viewCount >= 10000 and illustType == 0 and bookmarkCount*10 >= viewCount:
+    if (viewCount >= 10000 and illustType == 0 and viewCount*0.2 >= bookmarkCount) or (viewCount >= 5000 and illustType == 0 and viewCount*0.4 >= bookmarkCount):
         logger.info(f"PID:{illust_id} 符合")
         return True, res
     logger.warning(f"PID:{illust_id} 不符合")
