@@ -156,7 +156,7 @@ async def get_tag_setu(tag: str) -> tuple[list[str], dict]:
                 "Cookie": cookie
             }
             res = requests.get(
-                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%205000users%E5%85%A5%E3%82%8A?word="+tag+f"%205000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p=1&s_mode=s_tag&type=all&lang=zh",
+                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%2010000users%E5%85%A5%E3%82%8A?word="+tag+f"%2010000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p=1&s_mode=s_tag&type=all&lang=zh",
                 headers=headers,
                 proxies={
                     "http": "http://127.0.0.1:7890",
@@ -165,10 +165,23 @@ async def get_tag_setu(tag: str) -> tuple[list[str], dict]:
                 timeout=5
             ).json()
             illust_total = int(res["body"]["illustManga"]["total"])
+            mode = "10000"
+            if illust_total <= 10:
+                res = requests.get(
+                    url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%205000users%E5%85%A5%E3%82%8A?word="+tag+f"%205000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p=1&s_mode=s_tag&type=all&lang=zh",
+                    headers=headers,
+                    proxies={
+                        "http": "http://127.0.0.1:7890",
+                        "https": "http://127.0.0.1:7890"
+                    },
+                    timeout=5
+                ).json()
+                illust_total = int(res["body"]["illustManga"]["total"])
+                mode = "5000"
             page_total = int(illust_total/60) + 1
             random_page = random.randint(1, page_total)
             resp = requests.get(
-                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%205000users%E5%85%A5%E3%82%8A?word="+tag+f"%205000users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p="+str(random_page)+"&s_mode=s_tag&type=all&lang=zh",
+                url="https://www.pixiv.net/ajax/search/artworks/"+tag+"%20"+mode+"users%E5%85%A5%E3%82%8A?word="+tag+f"%20"+mode+"users%E5%85%A5%E3%82%8A&order=date_d&mode=all&p="+str(random_page)+"&s_mode=s_tag&type=all&lang=zh",
                 headers=headers,
                 proxies={
                     "http": "http://127.0.0.1:7890",
@@ -210,11 +223,13 @@ async def check(illust_id: str) -> tuple[bool, dict]:
         }
     ).json()
     viewCount = int(res["body"]["viewCount"])
+    pageCount = int(res["body"]["pageCount"])
     illustType = int(res["body"]["illustType"])
     bookmarkCount = int(res["body"]["bookmarkCount"])
-    if (viewCount >= 10000 and illustType == 0 and viewCount*0.2 >= bookmarkCount) or (viewCount >= 5000 and illustType == 0 and viewCount*0.4 >= bookmarkCount):
-        logger.info(f"PID:{illust_id} 符合")
-        return True, res
+    if pageCount <= 5:
+        if (viewCount >= 10000 and illustType == 0 and viewCount*0.2 >= bookmarkCount) or (viewCount >= 5000 and illustType == 0 and viewCount*0.4 >= bookmarkCount):
+            logger.info(f"PID:{illust_id} 符合")
+            return True, res
     logger.warning(f"PID:{illust_id} 不符合")
     return False, {}
 
